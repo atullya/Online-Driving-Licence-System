@@ -10,6 +10,7 @@ import ApplicantForm from "./pages/NewLicence/ApplicationForm/ApplicantForm.jsx"
 import SearchLicense from "./pages/FindLicence/SearchLicense.jsx";
 import SmartLicense from "./pages/FindLicence/SmartLicense/SmartLicense.jsx";
 import FeedBackForm from "./pages/FeedBack/FeedBackForm.jsx";
+import OTPpage from "./pages/NewLicence/NewComponent/OTPpage.jsx";
 const allRoutes = createBrowserRouter([
   {
     path: "/",
@@ -42,6 +43,10 @@ const allRoutes = createBrowserRouter([
   {
     path: "feedback",
     element: <FeedBackForm />,
+  },
+  {
+    path: "otppage",
+    element: <OTPpage />,
   },
 ]);
 

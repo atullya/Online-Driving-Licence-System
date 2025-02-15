@@ -31,7 +31,11 @@ app.post("/api/mail/otp", async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: "Email is required" });
 
-  const otp = generateOTP(); // Generate OTP
+  // Debug: Log the email received
+  console.log("Email received for OTP:", email);
+
+  // Generate OTP for testing purposes (hardcoded for now)
+  const otp = 123456;
   const expiryTime = Date.now() + OTP_EXPIRY_TIME; // Set expiry time (current time + 2 minutes)
 
   storedOTP[email] = { otp, expiryTime }; // Store OTP with expiry time
@@ -45,7 +49,9 @@ app.post("/api/mail/otp", async (req, res) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: "OTP sent successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "OTP sent successfully", otp: otp });
   } catch (error) {
     res
       .status(500)
@@ -56,11 +62,21 @@ app.post("/api/mail/otp", async (req, res) => {
 // Route to verify OTP
 app.post("/api/mail/verify-otp", (req, res) => {
   const { email, otp } = req.body;
+
+  // Debug: Log the received OTP and email
+  console.log("Received OTP:", otp);
+  console.log("Received Email:", email);
+
   if (!email || !otp)
     return res.status(400).json({ error: "Email and OTP are required" });
 
+  // Check if OTP exists in storedOTP for the given email
   if (storedOTP[email]) {
     const { otp: storedOtp, expiryTime } = storedOTP[email];
+
+    // Debug: Log the stored OTP and expiry time
+    console.log("Stored OTP:", storedOtp);
+    console.log("Stored OTP Expiry Time:", expiryTime);
 
     // Check if OTP has expired
     if (Date.now() > expiryTime) {
@@ -71,15 +87,20 @@ app.post("/api/mail/verify-otp", (req, res) => {
     }
 
     // Check if OTP matches
-    if (storedOtp === otp) {
+    if (storedOtp.toString() === otp.toString()) {
       delete storedOTP[email]; // Remove OTP after successful verification
       return res
         .status(200)
         .json({ message: "Welcome! OTP verified successfully." });
+    } else {
+      // Debug: OTP mismatch
+      console.log("OTP Mismatch: Stored OTP:", storedOtp, "Received OTP:", otp);
+      return res.status(400).json({ error: "Invalid OTP. Please try again." }); // Send back specific OTP mismatch error
     }
+  } else {
+    console.log("No OTP found for this email.");
+    return res.status(400).json({ error: "No OTP found for this email." });
   }
-
-  res.status(400).json({ error: "Invalid OTP. Please try again." });
 });
 
 // Start server

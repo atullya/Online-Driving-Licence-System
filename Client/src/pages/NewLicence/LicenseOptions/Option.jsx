@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import Heading from "../NewComponent/Heading";
+import { useNavigate } from "react-router-dom";
 
 const Option = () => {
+  const [status, setStatus] = useState("");
+  const navigate = useNavigate("");
+  let handleForm = (e) => {
+    e.preventDefault();
+    if (status == "one") {
+      alert("gogod");
+    }
+  };
   return (
     <div>
       <Heading />
@@ -10,9 +19,17 @@ const Option = () => {
           Do You Have Nepalese Driving License? ( के तपाईसँग नेपाली ड्राइभिङ
           लाइसेन्स छ ?)
         </h1>
-        <form action="" className="flex flex-col gap-4 font-normal ml-18">
+        <form
+          action=""
+          onSubmit={handleForm}
+          className="flex flex-col gap-6 text-[18px] font-normal ml-18"
+        >
           <div className="flex items-center gap-3">
-            <input type="radio" name="licenseStatus" />{" "}
+            <input
+              type="radio"
+              name="licenseStatus"
+              onChange={(e) => setStatus("one")}
+            />{" "}
             <p>
               No, I don't have Nepalese Driving License ( होइन, मसँग नेपाली
               ड्राइभिङ लाइसेन्स छैन)
@@ -33,7 +50,12 @@ const Option = () => {
               कार्यालयमा बायोमेट्रिक/परीक्षा दिएँ)
             </p>
           </div>
-          <button className="bg-[#225AAD] w-full p-2 rounded-lg text-white font-semibold text-[16px]">Next</button>
+          <button
+            type="submit"
+            className="bg-[#225AAD] w-full p-2 rounded-lg text-white font-semibold text-[16px]"
+          >
+            Next
+          </button>
         </form>
       </div>
     </div>
